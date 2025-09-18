@@ -2,6 +2,10 @@ from sqlmodel import SQLModel, Field, Relationship
 from typing import Optional, List
 from datetime import datetime
 import uuid
+from sqlalchemy import Column
+from sqlalchemy.dialects.postgresql import JSONB
+
+
 
 class Attachments(SQLModel, table=True):
     id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
@@ -18,8 +22,8 @@ class AuditLogs(SQLModel, table=True):
     table_name: str
     record_id: uuid.UUID
     action: str  # Check constraint: INSERT/UPDATE/DELETE (not supported in ORM)
-    old_values: Optional[dict] = Field(default=None, sa_column_kwargs={"type_": "jsonb"})
-    new_values: Optional[dict] = Field(default=None, sa_column_kwargs={"type_": "jsonb"})
+    old_values: Optional[dict] = Field(default=None, sa_column=Column(JSONB))
+    new_values: Optional[dict] = Field(default=None, sa_column=Column(JSONB))
     user_id: Optional[uuid.UUID] = Field(default=None, foreign_key="users.id")
     ip_address: Optional[str] = None  # inet type in Postgres, use str
     user_agent: Optional[str] = None
@@ -105,3 +109,4 @@ class Notifications(SQLModel, table=True):
     type: str  # info, warning, error, success
     is_read: Optional[bool] = False
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
