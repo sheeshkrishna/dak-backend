@@ -6,16 +6,10 @@ from models import Attachments, AuditLogs, DakDocuments, Departments, Escalation
 from sqlmodel import SQLModel, create_engine
 
 def create_db_and_tables():
-    SQLModel.metadata.create_all(engine, tables=[
-        Users.__table__,
-        Departments.__table__,
-        DakDocuments.__table__,
-        Attachments.__table__,
-        AuditLogs.__table__,
-        Escalations.__table__,
-        MovementLogs.__table__,
-        Notifications.__table__,
-    ])
+    # Comment this out to prevent SQLModel trying to create tables which already exist
+    # SQLModel.metadata.create_all(engine)
+    pass
+
 
 
 DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://user:password@host:port/dbname")
@@ -29,4 +23,5 @@ def create_db_and_tables():
 def get_session():
     with Session(engine) as session:
         yield session
+
 
