@@ -2,16 +2,16 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
 from typing import List
+
 import models
 import database
 import crud
 import auth
 import schemas
 
-
 app = FastAPI()
 
-models.SQLModel.metadata.create_all(database.engine)
+database.create_db_and_tables()
 
 @app.post("/token")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(database.get_session)):
@@ -23,7 +23,7 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = D
 
 @app.post("/users/", response_model=schemas.UserRead)
 def create_user(user: schemas.UserCreate, session: Session = Depends(database.get_session)):
-    return crud.create_user(session, user.username, user.password)
+    return crud.create_user(session, user.username, user.password, auth.get_password_hash)
 
 @app.get("/users/me", response_model=schemas.UserRead)
 def read_users_me(current_user: models.User = Depends(auth.get_current_user)):
@@ -36,4 +36,3 @@ def create_dak(dak: schemas.DAKCreate, session: Session = Depends(database.get_s
 @app.get("/daks/", response_model=List[schemas.DAKRead])
 def read_daks(session: Session = Depends(database.get_session)):
     return crud.list_daks(session)
-
