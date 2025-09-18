@@ -11,7 +11,7 @@ import schemas
 
 app = FastAPI()
 
-database.create_db_and_tables()
+#database.create_db_and_tables()
 
 @app.post("/token")
 def login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(database.get_session)):
@@ -36,3 +36,4 @@ def create_dak(dak: schemas.DAKCreate, session: Session = Depends(database.get_s
 @app.get("/daks/", response_model=List[schemas.DAKRead])
 def read_daks(session: Session = Depends(database.get_session)):
     return crud.list_daks(session)
+
