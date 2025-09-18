@@ -2,7 +2,12 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlmodel import Session
 from typing import List
-from . import models, database, crud, auth, schemas
+import models
+import database
+import crud
+import auth
+import schemas
+
 
 app = FastAPI()
 
@@ -31,3 +36,4 @@ def create_dak(dak: schemas.DAKCreate, session: Session = Depends(database.get_s
 @app.get("/daks/", response_model=List[schemas.DAKRead])
 def read_daks(session: Session = Depends(database.get_session)):
     return crud.list_daks(session)
+
